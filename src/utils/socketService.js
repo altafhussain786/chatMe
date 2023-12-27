@@ -1,6 +1,8 @@
+
+
 import  {io}  from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:3000";
+const SOCKET_URL = "http://localhost:3000/";
 
 class WSService {
 	initlizeSocket = async () => {
@@ -8,7 +10,8 @@ class WSService {
 			this.socket = io(SOCKET_URL, {
 				transports: ["websocket"]
 			});
-			// console.log("initlizaing socket", this.socket);
+		
+			console.log("initlizaing socket", this.socket);
 			this.socket.on("connect", (data) => {
 				console.log("socket connected");
 			});
