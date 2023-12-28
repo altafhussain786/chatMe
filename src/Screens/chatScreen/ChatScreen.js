@@ -70,13 +70,21 @@ function ChatScreen({ route }) {
 
 	const renderMessage = ({ item }) => {
     console.log(item,"FLAT LIST RENDER ITEM")
-    return(
-      <>
-		<View style={styles.messageContainer}>
-			<Text style={styles.messageText}>{item?.text}</Text>
-		</View>
-    </>
-    )
+    return (
+		<>
+			{myId?._id == item?.senderId ? (
+				<>
+					<View style={styles.senderMessageContainer}>
+						<Text style={styles.messageText}>{item?.text}</Text>
+					</View>
+				</>
+			) : (
+				<View style={styles.recevirrMessageContainer}>
+					<Text style={styles.messageText}>{item?.text}</Text>
+				</View>
+			)}
+		</>
+	);
 	};
 
 	return (
@@ -129,6 +137,23 @@ const styles = StyleSheet.create({
 	messagesContainer: {
 		padding: 16
 	},
+  senderMessageContainer:{
+    backgroundColor: "#e0e0e0",
+		padding: 8,
+		borderRadius: 8,
+		marginBottom: 8,
+		maxWidth: "50%",
+   
+		// alignSelf: "flex-end"
+  },
+  recevirrMessageContainer:{
+    backgroundColor: "red",
+		padding: 8,
+		borderRadius: 8,
+		marginBottom: 8,
+		maxWidth: "80%",
+		alignSelf: "flex-end"
+  },
 	messageContainer: {
 		backgroundColor: "#e0e0e0",
 		padding: 8,
