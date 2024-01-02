@@ -1,7 +1,8 @@
 import axios from "axios";
 
 
-const url = "http://192.168.1.106:8000";
+export const url = "http://192.168.1.106:8000";
+// const url="http://localhost:8000";
 export const adduser = async (data) => {
 	try {
 		await axios.post(`${url}/add`, data);
@@ -56,3 +57,13 @@ export const getMessages = async (id) => {
 		console.log("error in get Messagess api", err.message);
 	}
 };
+
+
+export const uploadFile = async (data) => {
+	
+    try {
+        return await axios.post(`${url}/file/upload`, data);
+    } catch (error) {
+        console.log('Error while calling uploagin file API ', error);
+    }
+}

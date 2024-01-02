@@ -11,10 +11,15 @@ import React, { useContext, useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { getusers, setConversation } from "../../services/api";
 import UserContainer from "../../components/UserContainer/UserContainer";
+import sockethelp from "../../utils/sockethelp";
+import { io } from "socket.io-client";
+import { socket } from "../../utils";
 
 const UsersList = ({ navigation, route }) => {
 	const { account, myId } = route?.params;
 	const [users, setUsers] = useState(account);
+	const [activeUsers, setActiveUsers] = useState([]);
+
 
 	const setConversations = async (senderId, reveiverId) => {
 		let response = await setConversation({
@@ -23,6 +28,21 @@ const UsersList = ({ navigation, route }) => {
 		});
 		console.log(response, "set Converation log===========>");
 	};
+
+	useEffect(() => {
+		const filteredArray = account.filter(user => user?._id == myId?._id);
+		console.log(filteredArray,"=====>===========>SOCCKET ");
+		// console.log(filteredArray,"=====>filteredArray ");
+
+		socket.emit("addUsers",filteredArray);
+		socket.on("getUsers",usersData =>{
+			console.log("FRONT END USER LIST",usersData);
+			setActiveUsers(usersData)
+
+			// console.log(usersData,"FRONT END SIDE");
+		})
+		
+	  }, [socket]);
 
 	return (
 		<>
@@ -37,17 +57,18 @@ const UsersList = ({ navigation, route }) => {
 					{users.map((data, index) => {
 						return (
 							<>
-								<UserContainer
+								{data?._id !==myId?._id ?<UserContainer
 									onPress={() => {
 										setConversations(myId?._id, data?._id),
 											navigation.navigate("ChatScreen", {
 												userData: data,
-												myId: myId
+												myId: myId,
+												activeUsers:activeUsers
 											});
 									}}
 									key={Math.random() * 1000}
 									name={data?.userName}
-								/>
+								/> :null}
 							</>
 						);
 					})}

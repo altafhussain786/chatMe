@@ -16,10 +16,11 @@ const LoginScreen = ({navigation}) => {
 
       setUsers(response);
       // setSelectedUserId(response)
+    console.log(response);
 
       // For simplicity, I'm just selecting the first user. You may have a different logic.
       if (response.length > 0) {
-        setSelectedUserId(response[1]._id);
+        setSelectedUserId(response[0]._id);
         // setSelectedUserId(response)
         console.log(response[0]?._id);
       }
@@ -37,8 +38,9 @@ const LoginScreen = ({navigation}) => {
     // Perform your login logic here
     // For simplicity, let's assume the user is authenticated if a user is selected
     if (selectedUserId) {
-      const selectedUser = users.find((user) => user._id === selectedUserId);
-      if(username==selectedUser?.userName && password == selectedUser?.password){
+      console.log(users,"LIIIGIG");
+      const selectedUser = users.find((user) => user.userName === username );
+      if(selectedUser){
 			navigation.navigate("UsersList",{account:users,myId:selectedUser})
 			console.log('Login successful');
 		}
