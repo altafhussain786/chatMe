@@ -21,6 +21,7 @@ import {
 } from "../../services/api";
 import * as DocumentPicker from "expo-document-picker";
 import { Socket } from "socket.io-client";
+import { socket } from "../../utils";
 
 function ChatScreen({ route }) {
 	const { userData, myId,activeUsers } = route?.params;
@@ -30,9 +31,22 @@ function ChatScreen({ route }) {
 	const [conversation, setConversation] = useState({});
 	const [pickedDocument, setPickedDocument] = useState(null);
 	const [docImg, setDocImg] = useState("");
+	const [incomingMsg,setIncomingMsg]=useState(null)
 
 
 
+
+	useEffect(() => {
+	  
+	
+	  socket.on("getMessage",data =>{
+setIncomingMsg({
+	...data,
+	createdAt:Date.now()
+})
+	  })
+	}, [])
+	
 	
 
 	useEffect(() => {
@@ -96,6 +110,11 @@ function ChatScreen({ route }) {
 		}
 	};
 
+	useEffect(() => {
+	 incomingMsg && conversation?.members?.includes(incomingMsg?.senderId) && setConversationMsg(prev =>[...prev,incomingMsg])
+	}, [incomingMsg,conversation])
+	
+
 	const sendMessage = async () => {
 		// sockethelp.emit("send_message", message);
 		// setData(message,...message);
@@ -124,10 +143,14 @@ function ChatScreen({ route }) {
 		// 		text: image
 		// 	};
 		// }
+
+		socket.emit("sendMessage",message)
 		let res = await newMessage(message);
 		console.log(res, "SND MSG SUCESSFULLy");
 		setMessage("");
 	};
+
+
 
 	const renderMessage = ({ item }) => {
 		// console.log(item, "FLAT LIST RENDER ITEM");
